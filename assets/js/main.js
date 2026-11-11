@@ -1,7 +1,7 @@
 // MOSIKEN — site behaviour. Everything here is an enhancement:
 // the pages read and navigate fine without it.
 
-import { renderPlates } from './plates.js';
+import { mountScenes } from './scenes.js';
 
 const root = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
@@ -162,59 +162,78 @@ function ink() {
   update();
 }
 
-/* ---------- Product index: a plate follows the pointer ---------- */
+/* ---------- Product scenes, and the index that follows the reader ---------- */
 
-function peek() {
+function scenes() {
+  const stages = mountScenes();
   const index = $('[data-index]');
-  const panel = $('[data-peek]');
-  if (!index || !panel || !finePointer.matches) return;
+  if (!index) return;
 
-  const plates = $$('[data-plate]', panel);
-  const at = { x: 0, y: 0, tx: 0, ty: 0 };
-  let raf = 0;
-  let on = false;
+  const viewer = stages.find((s) => s.el.matches('[data-viewer]'));
+  const rows = $$('[data-scene-for]', index);
+  const step = $('[data-viewer-step]', index);
+  const name = $('[data-viewer-name]', index);
+  const wide = matchMedia('(min-width: 60rem)');
+  const two = (n) => String(n).padStart(2, '0');
+  let active = null;
+  let held = null;
 
-  const show = (name) => {
-    plates.forEach((p) => p.classList.toggle('is-on', p.dataset.plate === name));
+  const say = (beat, scene) => {
+    if (step) step.textContent = `${two(beat + 1)} / ${two(scene.beats.length)}  ${scene.beats[beat]}`;
   };
 
-  const loop = () => {
-    at.x += (at.tx - at.x) * 0.16;
-    at.y += (at.ty - at.y) * 0.16;
-    panel.style.setProperty('--x', `${at.x.toFixed(1)}px`);
-    panel.style.setProperty('--y', `${at.y.toFixed(1)}px`);
-    raf = on || Math.abs(at.tx - at.x) > 0.5 || Math.abs(at.ty - at.y) > 0.5 ? requestAnimationFrame(loop) : 0;
+  const choose = (row) => {
+    if (!row || row === active) return;
+    active = row;
+    rows.forEach((r) => r.classList.toggle('is-active', r === row));
+    if (name) name.textContent = $('.row__name', row).textContent;
+    if (viewer) viewer.setScene(row.dataset.sceneFor);
   };
 
-  const place = (e) => {
-    const w = panel.offsetWidth;
-    const h = panel.offsetHeight;
-    at.tx = clamp(e.clientX + 24, 12, window.innerWidth - w - 12);
-    at.ty = clamp(e.clientY + 24, 12, window.innerHeight - h - 12);
-  };
-
-  index.addEventListener('pointermove', (e) => {
-    const row = e.target.closest('[data-peek-for]');
-    if (!row) {
-      on = false;
-      panel.classList.remove('is-on');
-      return;
+  // The row nearest the middle of the screen is the one being read.
+  const nearest = () => {
+    const mid = window.innerHeight * 0.46;
+    let best = rows[0];
+    let gap = Infinity;
+    for (const r of rows) {
+      const b = r.getBoundingClientRect();
+      const d = Math.abs((b.top + b.bottom) / 2 - mid);
+      if (d < gap) {
+        gap = d;
+        best = r;
+      }
     }
-    place(e);
-    if (!on) {
-      at.x = at.tx;
-      at.y = at.ty;
-      on = true;
-      panel.classList.add('is-on');
-    }
-    show(row.dataset.peekFor);
-    if (!raf) raf = requestAnimationFrame(loop);
-  });
+    return best;
+  };
 
-  index.addEventListener('pointerleave', () => {
-    on = false;
-    panel.classList.remove('is-on');
-  });
+  let queued = false;
+  const follow = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      if (!held && wide.matches) choose(nearest());
+    });
+  };
+
+  if (viewer) {
+    viewer.onBeat = say;
+    say(Math.max(0, viewer.beat), viewer.scene);
+  }
+  for (const r of rows) {
+    r.addEventListener('pointerenter', (e) => {
+      if (e.pointerType === 'touch') return;
+      held = r;
+      choose(r);
+    });
+    r.addEventListener('pointerleave', () => {
+      held = null;
+    });
+    r.addEventListener('focus', () => choose(r));
+  }
+  window.addEventListener('scroll', follow, { passive: true });
+  window.addEventListener('resize', follow);
+  choose(nearest());
 }
 
 /* ---------- Footer wordmark: width moves like a tide under the pointer ---------- */
@@ -395,10 +414,9 @@ function field() {
 theme();
 header();
 clock();
-renderPlates();
+scenes();
 reveal();
 ink();
-peek();
 wordmark();
 copy();
 field();

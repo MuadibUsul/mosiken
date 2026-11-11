@@ -34,6 +34,8 @@
   <script type="module" src="assets/js/main.js"></script>
 </head>
 <body>
+  <canvas class="field" data-field aria-hidden="true"></canvas>
+
   <a class="skip" id="top" href="#main">Skip to content</a>
 
   <header class="site-header">
@@ -103,10 +105,18 @@
           </div>
           <h2 class="product__name" id="veynod-name">Veynod</h2>
         </header>
+        <div class="product__show">
+          <div class="stage" data-scene="veynod" data-beats="#veynod-steps" role="img" aria-label="Animated diagram: tasks cross a shared board from agent execution to review, and a person is called on only at the final decision."></div>
+          <ol class="beats" id="veynod-steps">
+            <li>Tasks</li>
+            <li>Agent execution</li>
+            <li>Review</li>
+            <li>Human decision</li>
+          </ol>
+        </div>
         <div class="product__grid">
-          <div class="product__plate" data-plate="veynod" aria-hidden="true"></div>
+          <p class="lead">Veynod provides a shared environment for teams of AI agents to coordinate work.</p>
           <div class="product__body">
-            <p class="lead">Veynod provides a shared environment for teams of AI agents to coordinate work.</p>
             <div class="prose">
               <p>It brings tasks, shared project context, agent execution, review steps, and human decisions into one connected workflow. The goal is to make multi-agent development more structured, observable, and manageable without forcing people to supervise every individual step.</p>
             </div>
@@ -135,10 +145,17 @@
           <h2 class="product__name" id="ancs-name">ANCS</h2>
           <p class="mono soft">AI Native Creator Studio</p>
         </header>
+        <div class="product__show">
+          <div class="stage" data-scene="ancs" data-beats="#ancs-steps" role="img" aria-label="Animated diagram: a spoken or typed instruction finds its target in the frame and on the timeline, and the edit is applied as a separate layer while the source media stays whole."></div>
+          <ol class="beats" id="ancs-steps">
+            <li>Direction in words or voice</li>
+            <li>Visual and timeline targeting</li>
+            <li>Non-destructive edit</li>
+          </ol>
+        </div>
         <div class="product__grid">
-          <div class="product__plate" data-plate="ancs" aria-hidden="true"></div>
+          <p class="lead">ANCS explores a more direct way to make and edit video.</p>
           <div class="product__body">
-            <p class="lead">ANCS explores a more direct way to make and edit video.</p>
             <div class="prose">
               <p>Its design combines natural-language direction, responsive voice interaction, precise visual and timeline targeting, non-destructive editing, and multi-model workflows. The objective is to let creators express what they want to change while retaining control over source media and the final result.</p>
             </div>
@@ -165,10 +182,18 @@
           </div>
           <h2 class="product__name" id="serendipity-name">Serendipity</h2>
         </header>
+        <div class="product__show">
+          <div class="stage" data-scene="serendipity" data-beats="#serendipity-steps" role="img" aria-label="Animated diagram: a conversation becomes a private preference model, an agent compares it with others, and a suggested connection waits for the person to choose."></div>
+          <ol class="beats" id="serendipity-steps">
+            <li>Conversational onboarding</li>
+            <li>Preference modeling</li>
+            <li>Agent-assisted matching</li>
+            <li>Your choice</li>
+          </ol>
+        </div>
         <div class="product__grid">
-          <div class="product__plate" data-plate="serendipity" aria-hidden="true"></div>
+          <p class="lead">Serendipity is an exploratory social product built around deeper understanding and more intentional real-world connections.</p>
           <div class="product__body">
-            <p class="lead">Serendipity is an exploratory social product built around deeper understanding and more intentional real-world connections.</p>
             <div class="prose">
               <p>Its concept uses conversational onboarding, individual preference modeling, and AI-agent-assisted matching to help people discover compatible connections while preserving user choice, privacy, and autonomy.</p>
             </div>
@@ -193,10 +218,18 @@
           <h2 class="product__name" id="sheetos-name">SheetOS</h2>
           <p class="mono soft">SheetMetal OS</p>
         </header>
+        <div class="product__show">
+          <div class="stage" data-scene="sheetos" data-beats="#sheetos-steps" role="img" aria-label="Animated diagram: a cone is measured, its flat pattern is calculated and unfolded, and the outline is handed over as a DXF drawing. Move the pointer over it to change the dimensions."></div>
+          <ol class="beats" id="sheetos-steps">
+            <li>Field measurements</li>
+            <li>Parametric calculation</li>
+            <li>Unfolded geometry</li>
+            <li>DXF output</li>
+          </ol>
+        </div>
         <div class="product__grid">
-          <div class="product__plate" data-plate="sheetos" aria-hidden="true"></div>
+          <p class="lead">SheetOS supports sheet-metal engineering workflows, from field measurements and parametric calculations to unfolded geometry and production-ready drawings.</p>
           <div class="product__body">
-            <p class="lead">SheetOS supports sheet-metal engineering workflows, from field measurements and parametric calculations to unfolded geometry and production-ready drawings.</p>
             <div class="prose">
               <p>Built for practical fabrication scenarios, the software helps users convert dimensional inputs into usable layouts and DXF output for downstream manufacturing processes. Android and Windows applications are available.</p>
             </div>

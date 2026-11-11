@@ -35,6 +35,8 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Mosiken","url":"https://mosiken.org","logo":"https://mosiken.org/assets/img/icon-512.png","email":"ethan@mosiken.org","slogan":"Build What Comes Next.","description":"Mosiken is an Ohio-based software company developing AI-native platforms, creative tools, intelligent applications, and specialized engineering software.","address":{"@type":"PostalAddress","addressRegion":"OH","addressCountry":"US"}}</script>
 </head>
 <body>
+  <canvas class="field" data-field aria-hidden="true" data-gyre="67°48'N 12°50'E"></canvas>
+
   <a class="skip" id="top" href="#main">Skip to content</a>
 
   <header class="site-header">
@@ -66,9 +68,7 @@
   </header>
 
   <main id="main">
-    <section class="hero" aria-labelledby="hero-title">
-      <canvas class="field" data-field aria-hidden="true"></canvas>
-      <p class="eye-mark mono" aria-hidden="true">67°48'N 12°50'E</p>
+    <section class="hero" aria-labelledby="hero-title" data-field-stage>
       <div class="wrap hero__body">
         <p class="label">Independent software company · Ohio, USA</p>
         <h1 class="hero__title" id="hero-title">
@@ -115,58 +115,62 @@
             <p class="lead" data-reveal>Some of our products are available today. Others are actively being developed or explored. Each starts with the same question: what could software make meaningfully better?</p>
           </div>
         </div>
-        <ul class="index" data-index>
-          <li>
-            <a class="row" href="products.html#veynod" data-peek-for="veynod">
-              <span class="row__status status status--dev">Active development</span>
-              <span class="row__main">
+        <div class="index" data-index>
+          <ul class="index__list">
+            <li>
+              <a class="row" href="products.html#veynod" data-scene-for="veynod">
+                <span class="row__status status status--dev">Active development</span>
                 <span class="row__name">Veynod</span>
-                <span class="row__cat label">AI-Agent Collaboration &amp; Orchestration</span>
-                <span class="row__go i i--right" aria-hidden="true"></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a class="row" href="products.html#ancs" data-peek-for="ancs">
-              <span class="row__status status status--dev">In development</span>
-              <span class="row__main">
+                <span class="row__foot">
+                  <span class="row__cat label">AI-Agent Collaboration &amp; Orchestration</span>
+                  <span class="row__go i i--right" aria-hidden="true"></span>
+                </span>
+                <span class="row__scene stage" data-scene="veynod" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li>
+              <a class="row" href="products.html#ancs" data-scene-for="ancs">
+                <span class="row__status status status--dev">In development</span>
                 <span class="row__name">ANCS</span>
-                <span class="row__cat label">AI-Native Video Creation &amp; Editing</span>
-                <span class="row__go i i--right" aria-hidden="true"></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a class="row" href="products.html#serendipity" data-peek-for="serendipity">
-              <span class="row__status status status--research">Research &amp; design</span>
-              <span class="row__main">
+                <span class="row__foot">
+                  <span class="row__cat label">AI-Native Video Creation &amp; Editing</span>
+                  <span class="row__go i i--right" aria-hidden="true"></span>
+                </span>
+                <span class="row__scene stage" data-scene="ancs" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li>
+              <a class="row" href="products.html#serendipity" data-scene-for="serendipity">
+                <span class="row__status status status--research">Research &amp; design</span>
                 <span class="row__name">Serendipity</span>
-                <span class="row__cat label">AI-Native Social Discovery</span>
-                <span class="row__go i i--right" aria-hidden="true"></span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a class="row" href="products.html#sheetos" data-peek-for="sheetos">
-              <span class="row__status status status--live">Available</span>
-              <span class="row__main">
+                <span class="row__foot">
+                  <span class="row__cat label">AI-Native Social Discovery</span>
+                  <span class="row__go i i--right" aria-hidden="true"></span>
+                </span>
+                <span class="row__scene stage" data-scene="serendipity" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li>
+              <a class="row" href="products.html#sheetos" data-scene-for="sheetos">
+                <span class="row__status status status--live">Available</span>
                 <span class="row__name">SheetOS</span>
-                <span class="row__cat label">Engineering &amp; Fabrication Software</span>
-                <span class="row__go i i--right" aria-hidden="true"></span>
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="peek" data-peek aria-hidden="true">
-        <div data-plate="veynod"></div>
-        <div data-plate="ancs"></div>
-        <div data-plate="serendipity"></div>
-        <div data-plate="sheetos"></div>
+                <span class="row__foot">
+                  <span class="row__cat label">Engineering &amp; Fabrication Software</span>
+                  <span class="row__go i i--right" aria-hidden="true"></span>
+                </span>
+                <span class="row__scene stage" data-scene="sheetos" aria-hidden="true"></span>
+              </a>
+            </li>
+          </ul>
+          <div class="index__viewer" aria-hidden="true">
+            <div class="stage" data-scene="veynod" data-viewer></div>
+            <p class="index__caption mono"><span data-viewer-name>Veynod</span><span data-viewer-step></span></p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section band" aria-labelledby="mission-title">
+    <section class="section band" aria-labelledby="mission-title" data-zone>
       <div class="wrap sheet">
         <h2 class="label sheet__margin" id="mission-title">Mission</h2>
         <div class="sheet__main">

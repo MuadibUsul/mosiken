@@ -34,6 +34,8 @@
   <script type="module" src="/assets/js/main.js"></script>
 </head>
 <body>
+  <canvas class="field" data-field aria-hidden="true" data-gyre="67°48'N 12°50'E"></canvas>
+
   <a class="skip" id="top" href="#main">Skip to content</a>
 
   <header class="site-header">
@@ -64,9 +66,7 @@
     </div>
   </header>
 
-  <main id="main" class="lost">
-    <canvas class="field" data-field aria-hidden="true"></canvas>
-    <p class="eye-mark mono" aria-hidden="true">67°48'N 12°50'E</p>
+  <main id="main" class="lost" data-field-stage>
     <div class="wrap sheet">
       <p class="label sheet__margin">Error 404</p>
       <div class="sheet__main">

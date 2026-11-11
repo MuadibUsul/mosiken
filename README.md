@@ -19,9 +19,9 @@ It is a static site: plain HTML, one stylesheet, three small JavaScript modules,
 ```
 assets/
   css/main.css     design tokens, layout, components, light and dark themes
-  js/main.js       theme toggle, menu, clock, reveals, product preview, footer wordmark
-  js/field.js      the WebGL contour field in the hero and on the 404 page
-  js/plates.js     the four generated product diagrams
+  js/main.js       theme toggle, menu, clock, reveals, product index, footer wordmark
+  js/field.js      the WebGL chart that runs behind every page
+  js/scenes.js     the four animated product scenes (2D canvas)
   fonts/           Archivo and Chivo Mono (variable, self-hosted) with their licenses
   img/             icons and the social preview image
 favicon.svg, favicon.ico, site.webmanifest, robots.txt, sitemap.xml
@@ -43,7 +43,8 @@ Then open <http://127.0.0.1:4173>.
 
 - **Copy** lives directly in the HTML files. Product status wording is deliberate: keep "available", "in development" and "research" accurate for each product.
 - **Colors and type** are tokens at the top of `assets/css/main.css`. The two dark blocks redefine the same tokens; change both together.
-- **Product diagrams** are generated in `assets/js/plates.js`. A product page element with `data-plate="<id>"` receives the matching diagram.
+- **The chart** (`assets/js/field.js`) draws on the one `canvas[data-field]` at the top of each page. `data-gyre` on that canvas gives the page a whirlpool, `data-field-stage` marks the section where the chart is loud and answers the pointer, and `data-zone` marks a section that sits on a tinted band.
+- **Product scenes** live in `assets/js/scenes.js`. An element with `data-scene="<id>"` plays the matching scene; `data-beats="#list"` links an ordered list whose items light up as the scene moves through its steps. Each scene shows the idea behind a product, not its interface: keep them honest about what is shipped.
 - **Social preview** is `assets/img/og.png` (1200 × 630). Replace it if the headline changes.
 - **Sitemap**: update `lastmod` in `sitemap.xml` when a page changes, and add new pages there.
 
