@@ -1,0 +1,13 @@
+{
+  "name": "Mosiken",
+  "short_name": "Mosiken",
+  "description": "Mosiken is an Ohio-based software company developing AI-native platforms, creative tools, intelligent applications, and specialized engineering software.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#EFF3F2",
+  "theme_color": "#0A0F14",
+  "icons": [
+    { "src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
