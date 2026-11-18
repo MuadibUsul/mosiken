@@ -20,6 +20,80 @@ function seeded(seed) {
   };
 }
 
+/* ---------- Words: every label a scene draws, in both languages ---------- */
+
+const ZH = /^zh/i.test(document.documentElement.lang);
+const SANS = 'Archivo, "Mosiken SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", sans-serif';
+const MONO = '"Chivo Mono", "Mosiken SC", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", monospace';
+
+const WORDS = ZH
+  ? {
+      veynod: {
+        beats: ['任务', '智能体执行', '评审', '人工决策'],
+        wide: ['任务', '智能体执行', '评审', '人工决策'],
+        compact: ['任务', '执行', '评审', '决策'],
+        context: '共享项目上下文',
+        agents: '智能体',
+      },
+      ancs: {
+        beats: ['用文字或语音下指令', '在画面和时间轴上定位', '非破坏性修改'],
+        lines: ['把小船前面', '那段停顿剪掉。'],
+        marks: [[0, '把', '小船'], [1, '那段', '停顿']],
+        subject: '小船',
+        direction: '指令',
+        layer: '编辑层',
+        trim: '剪掉',
+        source: '原素材',
+      },
+      serendipity: {
+        beats: ['对话式引导', '偏好建模', '智能体辅助匹配', '由你决定'],
+        conversation: '对话',
+        model: '偏好模型',
+        agent: '智能体',
+        compatible: '合拍',
+        choice: '由你决定',
+      },
+      sheetos: {
+        beats: ['现场测量', '参数计算', '展开放样', '导出 DXF'],
+        flat: '展开图',
+        geometry: '2 段圆弧 · 2 条直线',
+        cells: { slant: '斜高', outer: '外半径', inner: '内半径', angle: '圆心角' },
+      },
+    }
+  : {
+      veynod: {
+        beats: ['Tasks', 'Agent execution', 'Review', 'Human decision'],
+        wide: ['Tasks', 'Agent execution', 'Review', 'Human decision'],
+        compact: ['Tasks', 'Execute', 'Review', 'Decide'],
+        context: 'Shared project context',
+        agents: 'Agents',
+      },
+      ancs: {
+        beats: ['Direction in words or voice', 'Visual and timeline targeting', 'Non-destructive edit'],
+        lines: ['Trim the pause', 'before the boat.'],
+        marks: [[0, 'Trim the ', 'pause'], [1, 'before the ', 'boat']],
+        subject: 'Boat',
+        direction: 'Direction',
+        layer: 'Edit layer',
+        trim: 'Trim',
+        source: 'Source',
+      },
+      serendipity: {
+        beats: ['Conversational onboarding', 'Preference modeling', 'Agent-assisted matching', 'Your choice'],
+        conversation: 'Conversation',
+        model: 'Preference model',
+        agent: 'Agent',
+        compatible: 'Compatible',
+        choice: 'Your choice',
+      },
+      sheetos: {
+        beats: ['Field measurements', 'Parametric calculation', 'Unfolded geometry', 'DXF output'],
+        flat: 'Flat pattern',
+        geometry: '2 arcs · 2 lines',
+        cells: { slant: 'Slant', outer: 'R outer', inner: 'R inner', angle: 'Angle' },
+      },
+    };
+
 /* ---------- Pen: thin drawing helpers in design units ---------- */
 
 function pen(ctx, scale, colors, compact, pointer) {
@@ -59,8 +133,8 @@ function pen(ctx, scale, colors, compact, pointer) {
   g.arc = (x, y, r, a0, a1, o) => g.path((c) => c.arc(x, y, Math.max(0, r), a0, a1), o);
   g.text = (str, x, y, o = {}) => {
     if (o.minor && g.tight) return;
-    const size = px(o.size ?? 10.5);
-    ctx.font = o.sans ? `${o.weight ?? 600} ${size}px Archivo, sans-serif` : `${o.weight ?? 400} ${size}px "Chivo Mono", monospace`;
+    const size = px((o.size ?? 10.5) * (ZH && !o.sans ? 1.12 : 1));
+    ctx.font = o.sans ? `${o.weight ?? 600} ${size}px ${SANS}` : `${o.weight ?? 400} ${size}px ${MONO}`;
     ctx.textAlign = o.align || 'left';
     ctx.textBaseline = o.base || 'alphabetic';
     ctx.globalAlpha = (o.alpha ?? 1) * g.fade;
@@ -69,8 +143,8 @@ function pen(ctx, scale, colors, compact, pointer) {
     ctx.globalAlpha = 1;
   };
   g.width = (str, o = {}) => {
-    const size = px(o.size ?? 10.5);
-    ctx.font = o.sans ? `${o.weight ?? 600} ${size}px Archivo, sans-serif` : `${o.weight ?? 400} ${size}px "Chivo Mono", monospace`;
+    const size = px((o.size ?? 10.5) * (ZH && !o.sans ? 1.12 : 1));
+    ctx.font = o.sans ? `${o.weight ?? 600} ${size}px ${SANS}` : `${o.weight ?? 400} ${size}px ${MONO}`;
     return ctx.measureText(o.sans ? str : str.toUpperCase()).width;
   };
   return g;
@@ -81,7 +155,7 @@ function pen(ctx, scale, colors, compact, pointer) {
 const veynod = {
   duration: 16,
   still: 9.2,
-  beats: ['Tasks', 'Agent execution', 'Review', 'Human decision'],
+  beats: WORDS.veynod.beats,
   beatAt: (t) => (t < 1.8 || t >= 11.6 ? 0 : t < 5.4 ? 1 : t < 7.4 ? 2 : 3),
   draw(g, t) {
     const { c } = g;
@@ -95,10 +169,11 @@ const veynod = {
     const cardH = Math.min(lh * 0.62, 40);
     const colX = (k) => B.x + k * cw + (cw - cardW) / 2;
     const laneY = (i) => B.y + head + i * lh + (lh - cardH) / 2;
-    const titles = g.compact ? ['Tasks', 'Execute', 'Review', 'Decide'] : ['Tasks', 'Agent execution', 'Review', 'Human decision'];
+    const W = WORDS.veynod;
+    const titles = g.compact ? W.compact : W.wide;
 
     // The board is the shared context.
-    g.text('Shared project context', B.x, B.y - 14, { minor: true });
+    g.text(W.context, B.x, B.y - 14, { minor: true });
     g.rect(B.x, B.y, B.w, B.h, { fill: c.paper, fillAlpha: 0.6, alpha: 0.9 });
     g.line(B.x, B.y + head, B.x + B.w, B.y + head, { alpha: 0.9 });
     for (let k = 0; k < 4; k += 1) {
@@ -113,7 +188,7 @@ const veynod = {
     const human = [B.x + 3 * cw + cw - 22, B.y + head / 2];
     const reviewHome = [B.x + 2 * cw + cw - 22, B.y + head / 2];
     const dock = (a) => [B.x + 10 + a * 24, dockY];
-    g.text('Agents', B.x + 10 + 3 * 24 + 4, dockY + 4, { minor: true });
+    g.text(W.agents, B.x + 10 + 3 * 24 + 4, dockY + 4, { minor: true });
 
     const cards = [];
     for (let i = 0; i < lanes; i += 1) {
@@ -190,13 +265,12 @@ const veynod = {
 
 /* ---------- ANCS: say what should change, see it land on the frame and the timeline ---------- */
 
-const LINE_ONE = 'Trim the pause';
-const LINE_TWO = 'before the boat.';
+const [LINE_ONE, LINE_TWO] = WORDS.ancs.lines;
 
 const ancs = {
   duration: 14,
   still: 11.4,
-  beats: ['Direction in words or voice', 'Visual and timeline targeting', 'Non-destructive edit'],
+  beats: WORDS.ancs.beats,
   beatAt: (t) => (t < 4.5 ? 0 : t < 8 ? 1 : 2),
   draw(g, t) {
     const { c } = g;
@@ -249,13 +323,13 @@ const ancs = {
       for (const [u, v] of [[0, 0], [1, 0], [1, 1], [0, 1]]) {
         g.rect(box.x + box.w * u - 3, box.y + box.h * v - 3, 6, 6, { fill: c.signal, stroke: false, alpha: on });
       }
-      if (aim > 0.95) g.text('Boat', box.x, box.y - 7, { color: c.signal, alpha: on, minor: true });
+      if (aim > 0.95) g.text(WORDS.ancs.subject, box.x, box.y - 7, { color: c.signal, alpha: on, minor: true });
     }
 
     /* direction */
     const speaking = seg(t, 0.3, 0.7) * (1 - seg(t, 3.9, 4.4));
     const wave = g.compact ? { x: P.x, y: P.y + 18, w: 132, h: P.h - 26 } : { x: P.x, y: P.y + 30, w: P.w, h: 56 };
-    g.text('Direction', P.x, P.y + 10, { minor: true });
+    g.text(WORDS.ancs.direction, P.x, P.y + 10, { minor: true });
     const bars = g.compact ? 20 : 34;
     for (let k = 0; k < bars; k += 1) {
       const u = k / (bars - 1);
@@ -271,7 +345,7 @@ const ancs = {
     const one = LINE_ONE.slice(0, typed);
     const two = LINE_TWO.slice(0, Math.max(0, typed - LINE_ONE.length));
     const opts = { sans: true, size, color: c.ink, weight: 600 };
-    const lineGap = g.px(size * 1.22);
+    const lineGap = g.px(size * (ZH ? 1.55 : 1.22));
     g.text(one, tx, ty, opts);
     g.text(two, tx, ty + lineGap, opts);
     if (t < 4.4 && Math.floor(t * 2.4) % 2 === 0) {
@@ -282,10 +356,11 @@ const ancs = {
     // The two words that became targets.
     const mark = seg(t, 4.6, 5.0) * (1 - seg(t, 12.8, 13.3));
     if (mark > 0) {
-      const p0 = tx + g.width('Trim the ', opts);
-      g.line(p0, ty + 5, p0 + g.width('pause', opts), ty + 5, { stroke: c.signal, width: 2, alpha: mark });
-      const b0 = tx + g.width('before the ', opts);
-      g.line(b0, ty + lineGap + 5, b0 + g.width('boat', opts), ty + lineGap + 5, { stroke: c.signal, width: 2, alpha: mark });
+      for (const [row, before, word] of WORDS.ancs.marks) {
+        const x0 = tx + g.width(before, opts);
+        const y0 = ty + row * lineGap + (ZH ? 7 : 5);
+        g.line(x0, y0, x0 + g.width(word, opts), y0, { stroke: c.signal, width: 2, alpha: mark });
+      }
     }
 
     /* timeline */
@@ -304,7 +379,7 @@ const ancs = {
     for (let k = 0; k <= 24; k += 1) {
       g.line(X(k / 24), T.y + 8, X(k / 24), T.y + (k % 4 ? 12 : 16), { alpha: 0.5 });
     }
-    g.text('Edit layer', T.x, yEdit + lane / 2 + 3, { minor: true, alpha: cut });
+    g.text(WORDS.ancs.layer, T.x, yEdit + lane / 2 + 3, { minor: true, alpha: cut });
     // clips
     g.rect(X(A[0]), yClip, T.w * (A[1] - A[0]), lane, { fill: c.paper });
     g.rect(X(Bz[0] - gap), yClip, T.w * (Bz[1] - Bz[0]), lane, { fill: c.paper });
@@ -315,7 +390,7 @@ const ancs = {
     const py = lerp(yClip, yEdit, lift);
     const pw = T.w * (Pz[1] - Pz[0]);
     g.rect(X(Pz[0]), py, pw, lane, { fill: lift > 0 ? c.signal : c.paper, fillAlpha: lift > 0 ? 0.12 : 1, stroke: lift > 0 ? c.signal : c.ink, dash: lift > 0.5 ? [4, 3] : [] });
-    if (lift > 0.9) g.text('Trim', X(Pz[0]) + 8, py + lane / 2 + 3.5, { color: c.signal, size: 9.5 });
+    if (lift > 0.9) g.text(WORDS.ancs.trim, X(Pz[0]) + 8, py + lane / 2 + 3.5, { color: c.signal, size: 9.5 });
     // sound: the pause is the quiet stretch
     const rand = seeded(11);
     for (let k = 0; k < 96; k += 1) {
@@ -328,7 +403,7 @@ const ancs = {
       g.line(X(x), yWave + lane / 2 - hgt / 2, X(x), yWave + lane / 2 + hgt / 2, { alpha: 0.45 });
     }
     // source media stays whole underneath
-    g.text('Source', T.x, ySrc + 9, { minor: true });
+    g.text(WORDS.ancs.source, T.x, ySrc + 9, { minor: true });
     const sx = T.x + (g.tight ? 0 : 58);
     g.line(sx, ySrc + 6, X(0.86), ySrc + 6, { alpha: 0.5, dash: [2, 3] });
     for (const u of [A[0], A[1], Pz[1], Bz[1]]) if (X(u) >= sx) g.line(X(u), ySrc + 2, X(u), ySrc + 10, { alpha: 0.5 });
@@ -364,7 +439,7 @@ const MODEL = [0.92, 0.55, 0.78, 0.42, 0.86, 0.6];
 const serendipity = {
   duration: 16,
   still: 14.2,
-  beats: ['Conversational onboarding', 'Preference modeling', 'Agent-assisted matching', 'Your choice'],
+  beats: WORDS.serendipity.beats,
   beatAt: (t) => (t < 4 ? 0 : t < 7.5 ? 1 : t < 12 ? 2 : 3),
   draw(g, t) {
     const { c } = g;
@@ -427,7 +502,7 @@ const serendipity = {
       g.line(x + 9, y + 15, x + w * 0.55, y + 15, { alpha: 0.42 * alpha, stroke: mine ? c.signal : c.ink });
       if (!mine) g.poly([[x - 12, y + 6], [x - 6, y + 12], [x - 12, y + 18], [x - 18, y + 12]], { fill: c.ink, stroke: false, alpha }, true);
     });
-    g.text('Conversation', bx - 18, uy - 16, { minor: true, alpha: seg(t, 0.2, 0.6) * (1 - gone) });
+    g.text(WORDS.serendipity.conversation, bx - 18, uy - 16, { minor: true, alpha: seg(t, 0.2, 0.6) * (1 - gone) });
 
     // 2 — what was said becomes a model of what matters
     const built = MODEL.map((_, k) => easeOut(seg(t, 4.0 + k * 0.45, 4.7 + k * 0.45)));
@@ -439,7 +514,7 @@ const serendipity = {
       });
       g.circle(ux, uy, big, { alpha: 0.12 * built[5], dash: [2, 4] });
       g.poly(shape(ux, uy, big, MODEL.map((v, k) => v * built[k])), { fill: c.signal, fillAlpha: 0.12, stroke: c.signal, width: 1.5 }, true);
-      g.text('Preference model', ux, uy + big + 20, { align: 'center', alpha: seg(t, 4.6, 5.2) * (1 - seg(t, 7.6, 8.2)), minor: true });
+      g.text(WORDS.serendipity.model, ux, uy + big + 20, { align: 'center', alpha: seg(t, 4.6, 5.2) * (1 - seg(t, 7.6, 8.2)), minor: true });
     }
     g.circle(ux, uy, 6.5, { fill: c.signal, stroke: false });
 
@@ -470,7 +545,7 @@ const serendipity = {
         // your model is laid over theirs; the arc is how far they agree
         if (t < leave + 0.3 || last) g.poly(shape(x, y, small, MODEL), { stroke: c.signal, alpha: 0.75 * (last ? 1 - chosen : 1 - seg(t, leave, leave + 0.3)) }, true);
         g.arc(x, y, small + 9, -Math.PI / 2, -Math.PI / 2 + TAU * fit, { stroke: c.signal, width: last ? 2.2 : 1.6, alpha: hold * (last ? 1 : end) });
-        if (last && t > 11.8) g.text('Compatible', x, y - small - 20, { align: 'center', color: c.signal, alpha: seg(t, 11.8, 12.2) * (1 - seg(t, 14.6, 15.2)), minor: true });
+        if (last && t > 11.8) g.text(WORDS.serendipity.compatible, x, y - small - 20, { align: 'center', color: c.signal, alpha: seg(t, 11.8, 12.2) * (1 - seg(t, 14.6, 15.2)), minor: true });
       });
       if (t >= 12.4) {
         const back = easeIO(seg(t, 12.4, 13.4));
@@ -480,7 +555,7 @@ const serendipity = {
       const seen = 1 - seg(t, 13.2, 13.5);
       if (trail.length > 1) g.poly(trail, { alpha: 0.4 * seen, dash: [1.5, 4] });
       g.poly([[ax, ay - 7], [ax + 7, ay], [ax, ay + 7], [ax - 7, ay]], { fill: c.ink, stroke: false, alpha: seen }, true);
-      if (t < 11.4) g.text('Agent', ax + 12, ay + 4, { alpha: seen * seg(t, 7.6, 8.0), minor: true });
+      if (t < 11.4) g.text(WORDS.serendipity.agent, ax + 12, ay + 4, { alpha: seen * seg(t, 7.6, 8.0), minor: true });
     }
 
     // 4 — the suggestion waits; the line only becomes solid when you say so
@@ -491,7 +566,7 @@ const serendipity = {
         const pulse = ((t - 12.4) * 1.5) % 1;
         g.circle(ux, uy, 10 + pulse * big, { stroke: c.signal, alpha: 1 - pulse });
       }
-      if (t >= 12.4) g.text('Your choice', ux, uy - big - 12, { align: 'center', color: c.signal, alpha: seg(t, 12.4, 12.8) * (1 - seg(t, 14.8, 15.3)) });
+      if (t >= 12.4) g.text(WORDS.serendipity.choice, ux, uy - big - 12, { align: 'center', color: c.signal, alpha: seg(t, 12.4, 12.8) * (1 - seg(t, 14.8, 15.3)) });
       // only now does the other model come into view, because both said yes
       if (chosen > 0) {
         g.poly(shape(mx, my, small * (1 + 0.5 * chosen), others[MATCH]), { fill: c.signal, fillAlpha: 0.12 * chosen, stroke: c.signal, alpha: chosen }, true);
@@ -505,7 +580,7 @@ const serendipity = {
 const sheetos = {
   duration: 16,
   still: 14.2,
-  beats: ['Field measurements', 'Parametric calculation', 'Unfolded geometry', 'DXF output'],
+  beats: WORDS.sheetos.beats,
   beatAt: (t) => (t < 3.5 ? 0 : t < 6.5 ? 1 : t < 11 ? 2 : 3),
   state: { r2: 110, h: 300 },
   draw(g, t) {
@@ -626,7 +701,7 @@ const sheetos = {
       }
       g.ctx.restore();
     } else {
-      g.text('Flat pattern', Q.x + Q.w / 2, Q.y + Q.h / 2, { align: 'center', alpha: 0.6, minor: true });
+      g.text(WORDS.sheetos.flat, Q.x + Q.w / 2, Q.y + Q.h / 2, { align: 'center', alpha: 0.6, minor: true });
     }
 
     // DXF: the outline is what leaves the building.
@@ -648,25 +723,27 @@ const sheetos = {
         g.poly([[fx, fy], [fx + fw - 10, fy], [fx + fw, fy + 10], [fx + fw, fy + fh], [fx, fy + fh]], { fill: c.paper, stroke: c.signal, width: 1.5, alpha: tag }, true);
         g.poly([[fx + fw - 10, fy], [fx + fw - 10, fy + 10], [fx + fw, fy + 10]], { stroke: c.signal, alpha: tag });
         g.text('DXF', fx + fw / 2, fy + fh - 9, { color: c.signal, align: 'center', size: 10, alpha: tag, weight: 600 });
-        g.text('2 arcs · 2 lines', fx - 10, fy + fh - 9, { align: 'right', alpha: tag, minor: true });
+        g.text(WORDS.sheetos.geometry, fx - 10, fy + fh - 9, { align: 'right', alpha: tag, minor: true });
       }
     }
 
     /* readouts: three numbers in, four numbers out */
+    const name = WORDS.sheetos.cells;
+    // [label, value, how far shown, derived, decimals, unit]
     const cells = [
-      ['D1', 2 * R1, measured[0], false],
-      ['D2', 2 * R2, measured[1], false],
-      ['H', Hh, measured[2], false],
-      ['Slant', slant, seg(t, 3.6, 4.4), true],
-      ['R outer', L1, seg(t, 4.3, 5.1), true],
-      ['R inner', L2, seg(t, 5.0, 5.8), true],
-      ['Angle', (theta * 180) / Math.PI, seg(t, 5.6, 6.4), true],
+      ['D1', 2 * R1, measured[0], false, 0, ''],
+      ['D2', 2 * R2, measured[1], false, 0, ''],
+      ['H', Hh, measured[2], false, 0, ''],
+      [name.slant, slant, seg(t, 3.6, 4.4), true, 1, ''],
+      [name.outer, L1, seg(t, 4.3, 5.1), true, 1, ''],
+      [name.inner, L2, seg(t, 5.0, 5.8), true, 1, ''],
+      [name.angle, (theta * 180) / Math.PI, seg(t, 5.6, 6.4), true, 1, '°'],
     ];
     const cols = g.compact ? 4 : 7;
     const cellW = D.w / cols;
     const rowH = g.compact ? 62 : D.h;
     g.line(D.x, D.y, D.x + D.w, D.y, { alpha: 0.5 });
-    cells.forEach(([label, value, shown, derived], i) => {
+    cells.forEach(([label, value, shown, derived, decimals, unit], i) => {
       const col = i % cols;
       const row = Math.floor(i / cols);
       const x = D.x + col * cellW;
@@ -679,7 +756,7 @@ const sheetos = {
       }
       // numbers settle as they are measured or calculated
       const settle = shown < 1 ? value * (0.6 + 0.4 * shown) + Math.sin(t * 40 + i) * (1 - shown) * 30 : value;
-      const txt = label === 'Angle' ? `${settle.toFixed(1)}°` : settle.toFixed(label.startsWith('D') || label === 'H' ? 0 : 1);
+      const txt = `${settle.toFixed(decimals)}${unit}`;
       g.text(txt, x + (col ? 12 : 0), y + 46, { color: derived ? c.signal : c.ink, size: g.compact ? 15 : 17, weight: 500 });
     });
     if (!g.tight) g.text('mm', D.x + D.w, D.y + 22, { align: 'right', size: 9.5 });

@@ -16,6 +16,16 @@
   font-display: swap;
 }
 
+/* Noto Sans SC, cut down to the characters the Chinese pages use (tools/subset-font.py).
+   Anything outside the subset falls back to the reader's own system font. */
+@font-face {
+  font-family: "Mosiken SC";
+  src: url("../fonts/mosiken-sc.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Chivo Mono";
   src: url("../fonts/chivo-mono-variable.woff2") format("woff2");
@@ -1482,6 +1492,125 @@ html:not(.js) .index__viewer {
 
 .lost .sheet__main {
   gap: 1.75rem;
+}
+
+/* ---------- 中文排版 ----------
+   Chinese has no wide or condensed cuts and no capitals, so the type leans on
+   weight, size and spacing instead. Latin words inside Chinese text keep Archivo. */
+
+:root:lang(zh) {
+  --font-sans: "Archivo", "Mosiken SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+  --font-mono: "Chivo Mono", "Mosiken SC", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", ui-monospace, monospace;
+}
+
+:lang(zh) body {
+  line-height: 1.75;
+  line-break: strict;
+}
+
+:lang(zh) .label,
+:lang(zh) .btn,
+:lang(zh) .nav a,
+:lang(zh) .menu-toggle {
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+}
+
+:lang(zh) .mono,
+:lang(zh) .status,
+:lang(zh) .tags li {
+  letter-spacing: 0.06em;
+}
+
+:lang(zh) .mono,
+:lang(zh) .status {
+  font-size: 0.8125rem;
+}
+
+:lang(zh) .lead {
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+}
+
+:lang(zh) .prose {
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+}
+
+:lang(zh) .hero__title {
+  --size: min(20vw, 19svh);
+  font-weight: 900;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+:lang(zh) .hero__title .w {
+  display: inline-block;
+  vertical-align: top;
+}
+
+:lang(zh) .hero__title .br {
+  display: block;
+}
+
+@media (min-width: 48rem) {
+  :lang(zh) .hero__title {
+    --size: min(15.5vw, 26svh);
+  }
+}
+
+/* Headlines break only at punctuation and spaces, so a phrase stays whole;
+   a phrase too long for the line still breaks rather than overflow. */
+:lang(zh) .display,
+:lang(zh) .page-head__title,
+:lang(zh) .principles h3 {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+:lang(zh) .display {
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+:lang(zh) .band .display {
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+:lang(zh) .page-head__title {
+  font-size: clamp(2.75rem, 1rem + 6.6vw, 7rem);
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+:lang(zh) .principles h3 {
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+:lang(zh) .facts dd,
+:lang(zh) .topics a,
+:lang(zh) .beats li {
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+:lang(zh) .product__grid .lead {
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+@media (max-width: 47.99rem) {
+  :lang(zh) .nav a {
+    font-size: clamp(2.75rem, 15vw, 5rem);
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
 }
 
 /* ---------- Motion preferences ---------- */

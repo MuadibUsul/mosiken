@@ -8,6 +8,22 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const $ = (sel, scope = document) => scope.querySelector(sel);
+const ZH = /^zh/i.test(root.lang);
+const SAY = ZH
+  ? {
+      theme: (to) => `切换到${to === 'dark' ? '深色' : '浅色'}主题`,
+      menu: '菜单',
+      close: '关闭',
+      copied: '已复制',
+      selected: '已选中，可手动复制',
+    }
+  : {
+      theme: (to) => `Switch to ${to} theme`,
+      menu: 'Menu',
+      close: 'Close',
+      copied: 'Copied',
+      selected: 'Address selected',
+    };
 const $$ = (sel, scope = document) => [...scope.querySelectorAll(sel)];
 
 window.__mosiken = true;
@@ -20,7 +36,7 @@ function theme() {
   const system = matchMedia('(prefers-color-scheme: dark)');
   const current = () => root.dataset.theme || (system.matches ? 'dark' : 'light');
   const label = () => {
-    button.setAttribute('aria-label', `Switch to ${current() === 'dark' ? 'light' : 'dark'} theme`);
+    button.setAttribute('aria-label', SAY.theme(current() === 'dark' ? 'light' : 'dark'));
   };
   button.addEventListener('click', () => {
     const next = current() === 'dark' ? 'light' : 'dark';
@@ -54,7 +70,7 @@ function header() {
   const set = (open) => {
     root.classList.toggle('menu-open', open);
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.textContent = open ? 'Close' : 'Menu';
+    toggle.textContent = open ? SAY.close : SAY.menu;
     rest.forEach((el) => {
       el.inert = open;
     });
@@ -86,13 +102,13 @@ function clock() {
       minute: '2-digit',
       second: '2-digit',
       hourCycle: 'h23',
-      timeZoneName: 'short',
+      timeZoneName: ZH ? undefined : 'short',
     });
   } catch {
     return;
   }
   const tick = () => {
-    const text = fmt.format(new Date());
+    const text = ZH ? `美东时间 ${fmt.format(new Date())}` : fmt.format(new Date());
     els.forEach((el) => {
       el.textContent = text;
     });
@@ -128,14 +144,30 @@ function ink() {
   if (!els.length || reduce.matches) return;
 
   for (const el of els) {
-    const words = el.textContent.trim().split(/\s+/);
+    const text = el.textContent.trim();
+    let parts;
+    if (typeof Intl.Segmenter === 'function') {
+      parts = [...new Intl.Segmenter(root.lang || 'en', { granularity: 'word' }).segment(text)].map((p) => p.segment);
+    } else {
+      parts = ZH ? [...text] : text.split(/(\s+)/);
+    }
     el.textContent = '';
-    words.forEach((word, i) => {
+    for (const part of parts) {
+      if (/^\s+$/.test(part)) {
+        el.append(part);
+        continue;
+      }
+      // Punctuation rides with the word before it.
+      const prev = el.lastElementChild;
+      if (prev && el.lastChild === prev && /^[\p{P}]+$/u.test(part)) {
+        prev.textContent += part;
+        continue;
+      }
       const span = document.createElement('span');
       span.className = 'word';
-      span.textContent = word;
-      el.append(span, i < words.length - 1 ? ' ' : '');
-    });
+      span.textContent = part;
+      el.append(span);
+    }
   }
 
   let queued = false;
@@ -375,7 +407,7 @@ function copy() {
           sel.addRange(range);
         }
       }
-      label.textContent = ok ? 'Copied' : 'Address selected';
+      label.textContent = ok ? SAY.copied : SAY.selected;
       button.classList.toggle('is-done', ok);
       clearTimeout(timer);
       timer = setTimeout(() => {
@@ -422,7 +454,7 @@ copy();
 field();
 
 console.info(
-  "%cMOSIKEN%c\nSome place names are clues.\n67°48'N 12°50'E",
+  ZH ? "%cMOSIKEN%c\n有些地名，本身就是线索。\n67°48'N 12°50'E" : "%cMOSIKEN%c\nSome place names are clues.\n67°48'N 12°50'E",
   'font: 800 22px/1.6 sans-serif; letter-spacing: 0.08em',
   'font: 12px/1.6 monospace',
 );
