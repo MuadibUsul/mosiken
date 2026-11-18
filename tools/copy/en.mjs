@@ -6,6 +6,8 @@ export default {
   ogLocale: 'en_US',
   ogImage: 'og.png',
   ogImageAlt: 'Mosiken — Build What Comes Next.',
+  brand: 'Mosiken',
+  commentTitle: 'MOSIKEN · mosiken.org',
   comment: ["He'ershingenmosiken is not one place. It is two.", `The second one: 67°44'45"N 12°45'19"E.`],
 
   ui: {
@@ -182,5 +184,7 @@ export default {
   org: {
     slogan: 'Build What Comes Next.',
     description: 'Mosiken is an Ohio-based software company developing AI-native platforms, creative tools, intelligent applications, and specialized engineering software.',
+    addressRegion: 'OH',
+    addressCountry: 'US',
   },
 };

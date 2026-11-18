@@ -25,6 +25,8 @@ There is no language switch. A short script at the top of every page reads the b
 
 The Chinese copy is written for Chinese readers rather than translated line by line. Keep it that way when editing: change the meaning in both files, then write each in its own language.
 
+The two versions name different companies on purpose: the English pages present Mosiken (Ohio, United States) and the Chinese pages present 衍川 (中国 · 广州), with the clock on each set to that company's time zone. The brand name comes from `brand` and the JSON-LD address from `org.addressRegion` / `org.addressCountry` in `tools/copy/*.mjs`, so neither leaks into the other language.
+
 ## Structure
 
 ```

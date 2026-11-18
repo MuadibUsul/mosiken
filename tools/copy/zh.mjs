@@ -1,16 +1,19 @@
-// 简体中文文案。按中文读者的语感重写，不逐句对译；中英文、数字之间留半角空格。
+// 简体中文文案，对应公司主体「衍川」（中国 · 广州）。
+// 按中文读者的语感写，不逐句对译；中英文、数字之间留半角空格。
 
 export default {
   lang: 'zh',
   htmlLang: 'zh-CN',
   ogLocale: 'zh_CN',
   ogImage: 'og-zh.png',
-  ogImageAlt: 'Mosiken — 下一步，造出来。',
-  comment: ['赫尔辛根默斯肯，不是一个地方，是两个。', `第二个：67°44'45"N 12°45'19"E。`],
+  ogImageAlt: '衍川 — 下一步，造出来。',
+  brand: '衍川',
+  commentTitle: '衍川 · mosiken.org',
+  comment: [],
 
   ui: {
     skip: '跳到正文',
-    homeLabel: 'Mosiken 首页',
+    homeLabel: '衍川首页',
     navLabel: '主导航',
     footerNavLabel: '页脚导航',
     home: '首页',
@@ -19,12 +22,12 @@ export default {
     contact: '联系',
     menu: '菜单',
     theme: '切换主题',
-    place: '美国俄亥俄州',
-    placeShort: '美国俄亥俄州',
+    place: '中国 · 广州',
+    placeShort: '中国 · 广州',
     localTime: '',
-    clockFallback: '美东时间',
+    clockFallback: '北京时间',
     site: '导航',
-    rights: '© 2026 Mosiken 保留所有权利',
+    rights: '© 2026 衍川 保留所有权利',
     top: '回到顶部',
     scroll: '向下',
     copy: '复制邮箱',
@@ -43,7 +46,7 @@ export default {
       category: 'AI 智能体协作与编排',
       short: '持续开发中',
       full: '官网已上线 · 持续开发中',
-      lead: 'Veynod 是一个让 AI 智能体组队干活的共享空间。',
+      lead: 'Veynod 是一个让 AI 智能体组队协作、共同完成任务的共享空间。',
       body: '任务、项目上下文、智能体执行、评审环节和人的决策，都被串进同一条工作流。目标是让多智能体开发更有章法、看得清、管得住，又不必让人盯着每一步。',
       tags: ['多智能体系统', '智能体协同', '工作流编排', '人工把关'],
       links: ['veynod.com', '代码仓库'],
@@ -55,7 +58,7 @@ export default {
       category: 'AI 原生视频创作与剪辑',
       short: '开发中',
       full: '开发中',
-      lead: 'ANCS 想换一种更直接的方式来做视频、剪视频。',
+      lead: 'ANCS 在探索一种更直接的视频创作与剪辑方式。',
       body: '它把自然语言指挥、即时响应的语音交互、画面和时间轴上的精准定位、非破坏性编辑以及多模型协作揉在一起。创作者只要说出想改哪里，原始素材和最终成片始终由自己掌控。',
       tags: ['AI 视频剪辑', '创作工作流', '多模态交互', '非破坏性编辑'],
       links: ['开发仓库'],
@@ -66,7 +69,7 @@ export default {
       category: 'AI 原生社交发现',
       short: '研究与设计中',
       full: '研究与产品设计阶段',
-      lead: 'Serendipity 是一个仍在探索中的社交产品，想让人与人彼此了解得更深，在现实里相遇得更用心。',
+      lead: 'Serendipity 是一个仍在探索中的社交产品，希望让人与人彼此了解得更深，在现实里相遇得更用心。',
       body: '它的设想是：用聊天代替填表完成注册，为每个人建立偏好模型，再由 AI 智能体协助匹配，帮你找到真正合拍的人。选择权、隐私和自主权，始终在你自己手里。',
       tags: ['社交发现', '对话式 AI', '智能体辅助匹配', '人与人的连接'],
       links: [],
@@ -88,43 +91,43 @@ export default {
   },
 
   home: {
-    title: 'Mosiken | AI 原生软件与数字产品研发',
-    description: 'Mosiken 是一家位于美国俄亥俄州的独立软件公司，研发 AI 原生平台、创作工具、社交应用和专业工程软件。来看看我们的产品。',
-    eyebrow: '独立软件公司 · 美国俄亥俄州',
+    title: '衍川 | AI 原生软件与数字产品研发',
+    description: '衍川是一家位于中国广州的软件公司，研发 AI 原生平台、创作工具、社交应用与专业工程软件。来看看我们的产品。',
+    eyebrow: '独立软件公司 · 中国广州',
     hero: [[['下一步，', false]], [['造出来。', true]]],
     heroLabel: '下一步，造出来。',
-    sub: '世界在变，我们只做原创软件：让 AI 智能体组队协作，让创作工具更聪明，做值得投入的数字体验，也做分毫不差的工程工具。',
+    sub: '世界在变，我们只做原创软件：让 AI 智能体协作，让创作工具更聪明，做值得投入的数字体验，也做分毫不差的工程工具。',
     primary: '看看我们的产品',
     secondary: '联系我们',
     introLabel: '简介',
     introTitle: '技术不该只是看起来厉害。',
-    intro: '在 Mosiken，我们把新想法做成专注、好用的产品。我们的工作横跨 AI 原生交互、智能协同、数字创作，以及为真实任务打造的专业工具。',
+    intro: '在衍川，我们把新想法做成专注、好用的产品。我们的工作横跨 AI 原生交互、智能协同、数字创作，以及为真实任务打造的专业工具。',
     portfolioLabel: '产品',
     portfolioTitle: '四个方向，同一套产品思维。',
     portfolio: '有的产品已经可以用了，有的还在开发或探索。它们都从同一个问题出发：软件还能把什么事真正变好？',
     missionLabel: '使命',
     mission: '把有野心的想法，做成好用的软件，让个人和团队能创造、能协作、能成事。',
-    aboutLink: '关于 Mosiken',
+    aboutLink: '关于衍川',
   },
 
   productsPage: {
-    title: '产品 | Veynod、ANCS、Serendipity 与 SheetOS | Mosiken',
-    description: 'Veynod、ANCS、Serendipity 和 SheetOS：Mosiken 的四款原创软件产品，每款都标明了目前所处的阶段。',
+    title: '产品 | Veynod、ANCS、Serendipity 与 SheetOS | 衍川',
+    description: 'Veynod、ANCS、Serendipity 与 SheetOS：衍川的四款原创软件产品，每款都标明了目前所处的阶段。',
     label: '产品',
     note: '各产品成熟度不同，每款都标明了它目前所处的阶段。',
   },
 
   about: {
-    title: '关于 Mosiken | 独立软件公司',
-    description: 'Mosiken 是一家总部位于美国俄亥俄州的独立软件公司。我们研究、设计并开发原创数字产品，让复杂的技术更好用、更容易上手。',
+    title: '关于衍川 | 独立软件公司',
+    description: '衍川是一家总部位于中国广州的独立软件公司。我们研究、设计并开发原创数字产品，让复杂的技术更好用、更容易上手。',
     label: '关于',
     heading: '想得独立，做得扎实。',
-    lead: 'Mosiken 从构想到落地，研发原创软件产品。我们横跨多个领域，因为真正重要的问题，很少只属于某一个类别。把这些产品连在一起的，是三件我们始终在意的事：用心的用户体验、扎实的软件底座，以及新技术的实际价值。',
+    lead: '衍川从构想到落地，研发原创软件产品。我们横跨多个领域，因为真正重要的问题，很少只属于某一个类别。把这些产品连在一起的，是三件我们始终在意的事：用心的用户体验、扎实的软件底座，以及新技术的实际价值。',
     companyLabel: '公司',
     company: [
-      '<strong>Mosiken 是一家总部位于美国俄亥俄州的独立软件公司。</strong>我们研究、设计并开发原创数字产品，让复杂的技术更好用、更容易上手。产品线覆盖 AI 智能体协作、智能创作工作流、AI 原生社交体验和专业工程工具。',
+      '<strong>衍川是一家总部位于中国广州的独立软件公司。</strong>我们研究、设计并开发原创数字产品，让复杂的技术更好用、更容易上手。产品线覆盖 AI 智能体协作、智能创作工作流、AI 原生社交体验与专业工程工具。',
       '我们专注做原创产品，而不是把现成的工具换个包装。我们探索新的交互方式，围绕人们真正要完成的工作来设计系统，再通过一轮轮迭代，把有潜力的想法做成能用的软件。',
-      '产品思维和一线工程，我们两头都抓：从早期构想和实验出发，一路做到真正落地的应用。',
+      '产品思维与一线工程，我们两头都抓：从早期构想和实验出发，一路做到真正落地的应用。',
     ],
     portfolioLink: '看看我们的产品',
     missionLabel: '使命',
@@ -151,8 +154,8 @@ export default {
   },
 
   contact: {
-    title: '联系我们 | Mosiken',
-    description: '产品咨询、商务合作或其他事宜，欢迎写信给 Mosiken：ethan@mosiken.org。',
+    title: '联系我们 | 衍川',
+    description: '产品咨询、商务合作或其他事宜，欢迎写信给衍川：ethan@mosiken.org。',
     topicsLabel: '写封邮件，聊聊',
     topics: [
       ['产品咨询', '产品咨询'],
@@ -164,7 +167,7 @@ export default {
   },
 
   lost: {
-    title: '页面不存在 | Mosiken',
+    title: '页面不存在 | 衍川',
     description: '海图上没有这一页。',
     label: '404',
     heading: '这里没有故事。',
@@ -174,12 +177,14 @@ export default {
   },
 
   social: {
-    title: 'Mosiken — 下一步，造出来。',
+    title: '衍川 — 下一步，造出来。',
     description: '原创软件产品，横跨 AI 协作、创意技术、人与人的连接和工程领域。',
   },
 
   org: {
     slogan: '下一步，造出来。',
-    description: 'Mosiken 是一家位于美国俄亥俄州的软件公司，研发 AI 原生平台、创作工具、智能应用和专业工程软件。',
+    description: '衍川是一家位于中国广州的软件公司，研发 AI 原生平台、创作工具、智能应用与专业工程软件。',
+    addressRegion: '广东',
+    addressCountry: 'CN',
   },
 };

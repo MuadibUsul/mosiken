@@ -66,13 +66,13 @@ function head(C, p) {
     ? `\n<script type="application/ld+json">${JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'Mosiken',
+        name: C.brand,
         url: `${SITE}/`,
         logo: `${SITE}/assets/img/icon-512.png`,
         email: EMAIL,
         slogan: C.org.slogan,
         description: C.org.description,
-        address: { '@type': 'PostalAddress', addressRegion: 'OH', addressCountry: 'US' },
+        address: { '@type': 'PostalAddress', addressRegion: C.org.addressRegion, addressCountry: C.org.addressCountry },
       })}</script>`
     : '';
   const other = C.lang === 'zh' ? en : zh;
@@ -86,7 +86,7 @@ ${alternates}
 <meta name="theme-color" content="#EFF3F2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#06090C" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Mosiken">
+<meta property="og:site_name" content="${attr(C.brand)}">
 <meta property="og:locale" content="${C.ogLocale}">
 <meta property="og:locale:alternate" content="${other.ogLocale}">
 <meta property="og:title" content="${attr(C.social.title)}">
@@ -133,7 +133,7 @@ function header(C, p) {
         <path d="M12 7.5a4.5 4.5 0 1 1-4.5 4.5"/>
         <circle class="eye" cx="12" cy="12" r="1.7"/>
       </svg>
-      <span>Mosiken</span>
+      <span>${C.brand}</span>
     </a>
     <div class="site-header__tools">
       <nav class="nav" id="site-nav" aria-label="${U.navLabel}">
@@ -160,7 +160,7 @@ function footer(C, p) {
   <div class="wrap">
     <div class="site-footer__top">
       <div>
-        <h2 class="label">Mosiken</h2>
+        <h2 class="label">${C.brand}</h2>
         <p>${U.place}</p>
         <p class="mono soft">${time}</p>
       </div>
@@ -436,7 +436,7 @@ ${A.principles
       <h2 class="label sheet__margin" id="facts-title">${A.factsLabel}</h2>
       <div class="sheet__main">
         <dl class="facts">
-          <div><dt class="mono">${F.company}</dt><dd>Mosiken</dd></div>
+          <div><dt class="mono">${F.company}</dt><dd>${C.brand}</dd></div>
           <div><dt class="mono">${F.hq}</dt><dd>${C.ui.place}</dd></div>
           <div><dt class="mono">${F.industry}</dt><dd>${F.industryValue}</dd></div>
           <div><dt class="mono">${F.focus}</dt><dd>${F.focusValue}</dd></div>
@@ -483,7 +483,7 @@ ${K.topics.map(([s, label]) => `          <a href="${subject(s)}">${label} <span
       <h2 class="label sheet__margin" id="where-title">${K.whereLabel}</h2>
       <div class="sheet__main">
         <dl class="facts">
-          <div><dt class="mono">${K.facts.company}</dt><dd>Mosiken</dd></div>
+          <div><dt class="mono">${K.facts.company}</dt><dd>${C.brand}</dd></div>
           <div><dt class="mono">${K.facts.location}</dt><dd>${C.ui.place}</dd></div>
           <div><dt class="mono">${K.facts.time}</dt><dd><span data-clock>${C.ui.clockFallback}</span></dd></div>
           <div><dt class="mono">${K.facts.web}</dt><dd><a class="link" href="${SITE}">mosiken.org</a></dd></div>
@@ -517,7 +517,7 @@ function lost(C, p) {
 function documentFor(C, p, main) {
   return `<!doctype html>
 <!--
-  MOSIKEN · mosiken.org
+  ${C.commentTitle}
 
   ${C.comment.join('\n  ')}
 -->

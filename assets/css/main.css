@@ -1560,13 +1560,31 @@ html:not(.js) .index__viewer {
   }
 }
 
-/* Headlines break only at punctuation and spaces, so a phrase stays whole;
-   a phrase too long for the line still breaks rather than overflow. */
-:lang(zh) .display,
+/* Page titles and the mission band break only at punctuation and spaces, so a
+   phrase stays whole; a phrase too long for the line still breaks rather than
+   overflow. Ordinary section headings instead break anywhere and rebalance. */
 :lang(zh) .page-head__title,
-:lang(zh) .principles h3 {
+:lang(zh) .principles h3,
+:lang(zh) .band .display {
   word-break: keep-all;
   overflow-wrap: anywhere;
+}
+
+/* Leave no short last line behind: a two-character tail on a heading reads
+   like a mistake in Chinese, so let the browser rebalance the break. The
+   mission band is left out — its sentence already breaks at its commas. */
+:lang(zh) .page-head__title,
+:lang(zh) .lead,
+:lang(zh) .prose {
+  text-wrap: pretty;
+}
+
+:lang(zh) .section:not(.band) .display {
+  text-wrap: balance;
+}
+
+:lang(zh) .principles p {
+  text-wrap: pretty;
 }
 
 :lang(zh) .display {
@@ -1584,7 +1602,7 @@ html:not(.js) .index__viewer {
   font-size: clamp(2.75rem, 1rem + 6.6vw, 7rem);
   font-weight: 900;
   line-height: 1.12;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 :lang(zh) .principles h3 {
