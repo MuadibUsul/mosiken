@@ -62,19 +62,22 @@ function head(C, p) {
         `<link rel="alternate" hreflang="zh-Hans" href="${url('zh', p.file)}">`,
         `<link rel="alternate" hreflang="x-default" href="${url('en', p.file)}">`,
       ].join('\n');
-  const jsonLd = p.jsonLd
-    ? `\n<script type="application/ld+json">${JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        name: C.brand,
-        url: `${SITE}/`,
-        logo: `${SITE}/assets/img/icon-512.png`,
-        email: EMAIL,
-        slogan: C.org.slogan,
-        description: C.org.description,
-        address: { '@type': 'PostalAddress', addressRegion: C.org.addressRegion, addressCountry: C.org.addressCountry },
-      })}</script>`
-    : '';
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: C.brand,
+    url: `${SITE}/`,
+    logo: `${SITE}/assets/img/icon-512.png`,
+    email: EMAIL,
+    slogan: C.org.slogan,
+    description: C.org.description,
+  };
+  // A postal address is a physical location. English copy only states the
+  // registration jurisdiction, so it omits addressRegion and publishes no address.
+  if (C.org.addressRegion && C.org.addressCountry) {
+    ld.address = { '@type': 'PostalAddress', addressRegion: C.org.addressRegion, addressCountry: C.org.addressCountry };
+  }
+  const jsonLd = p.jsonLd ? `\n<script type="application/ld+json">${JSON.stringify(ld)}</script>` : '';
   const other = C.lang === 'zh' ? en : zh;
   return `
 <meta charset="utf-8">
