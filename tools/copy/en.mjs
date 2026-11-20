@@ -21,8 +21,8 @@ export default {
     contact: 'Contact',
     menu: 'Menu',
     theme: 'Switch theme',
-    place: 'Ohio, United States',
-    placeShort: 'Ohio, USA',
+    place: 'Registered in Wyoming, USA',
+    placeShort: 'Registered in Wyoming, USA',
     localTime: 'Local time',
     clockFallback: 'Eastern Time',
     site: 'Site',
@@ -91,8 +91,8 @@ export default {
 
   home: {
     title: 'Mosiken | AI-Native Software &amp; Digital Product Development',
-    description: 'Mosiken is an Ohio-based software company developing AI-native platforms, creative tools, social applications, and specialized engineering software. Explore our products.',
-    eyebrow: 'Independent software company · Ohio, USA',
+    description: 'Mosiken is a software company registered in Wyoming, USA, developing AI-native platforms, creative tools, social applications, and specialized engineering software. Explore our products.',
+    eyebrow: 'Independent software company · Registered in Wyoming, USA',
     // [word, accent] — one line per entry
     hero: [[['Build', false]], [['What', false], ['Comes', false]], [['Next.', true]]],
     heroLabel: 'Build What Comes Next.',
@@ -119,13 +119,13 @@ export default {
 
   about: {
     title: 'About Mosiken | Independent Software Company',
-    description: 'Mosiken is an independent software company based in Ohio, United States. We research, design, and develop original digital products that make complex technology more useful and accessible.',
+    description: 'Mosiken is an independent software company registered in Wyoming, USA. We research, design, and develop original digital products that make complex technology more useful and accessible.',
     label: 'About',
     heading: 'Independent thinking. Purposeful engineering.',
     lead: 'Mosiken develops original software products from concept to implementation. We work across multiple disciplines because important problems rarely fit into a single category. What connects our products is a focus on thoughtful user experiences, robust software foundations, and the practical value of new technology.',
     companyLabel: 'Company',
     company: [
-      '<strong>Mosiken is an independent software company based in Ohio, United States.</strong> We research, design, and develop original digital products that make complex technology more useful and accessible. Our portfolio spans AI-agent collaboration, intelligent creative workflows, AI-native social experiences, and specialized engineering tools.',
+      '<strong>Mosiken is an independent software company registered in Wyoming, USA.</strong> We research, design, and develop original digital products that make complex technology more useful and accessible. Our portfolio spans AI-agent collaboration, intelligent creative workflows, AI-native social experiences, and specialized engineering tools.',
       'Our focus is on developing original products rather than simply packaging existing tools. We explore emerging interaction models, design systems around the work people actually need to accomplish, and turn promising ideas into usable software through iterative engineering.',
       'We combine product thinking with hands-on software engineering, moving from early concepts and experimentation to practical applications.',
     ],
@@ -143,7 +143,7 @@ export default {
     factsLabel: 'At a glance',
     facts: {
       company: 'Company',
-      hq: 'Headquarters',
+      hq: 'Registration',
       industry: 'Industry',
       industryValue: 'Software Development &amp; Digital Products',
       focus: 'Focus',
@@ -162,8 +162,8 @@ export default {
       ['Partnership', 'Partnerships'],
       ['General correspondence', 'General correspondence'],
     ],
-    whereLabel: 'Where we are',
-    facts: { company: 'Company', location: 'Location', time: 'Local time', web: 'Website' },
+    whereLabel: 'Registration',
+    facts: { company: 'Company', location: 'Registration', time: 'Local time', web: 'Website' },
   },
 
   lost: {
@@ -183,8 +183,6 @@ export default {
 
   org: {
     slogan: 'Build What Comes Next.',
-    description: 'Mosiken is an Ohio-based software company developing AI-native platforms, creative tools, intelligent applications, and specialized engineering software.',
-    addressRegion: 'OH',
-    addressCountry: 'US',
+    description: 'Mosiken is a software company registered in Wyoming, USA, developing AI-native platforms, creative tools, intelligent applications, and specialized engineering software.',
   },
 };
