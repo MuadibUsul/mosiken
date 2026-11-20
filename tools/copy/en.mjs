@@ -24,7 +24,7 @@ export default {
     place: 'Registered in Wyoming, USA',
     placeShort: 'Registered in Wyoming, USA',
     localTime: 'Local time',
-    clockFallback: 'Eastern Time',
+    clockFallback: 'Mountain Time',
     site: 'Site',
     rights: '© 2026 Mosiken. All rights reserved.',
     top: 'Back to top',

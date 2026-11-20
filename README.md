@@ -25,7 +25,7 @@ There is no language switch. A short script at the top of every page reads the b
 
 The Chinese copy is written for Chinese readers rather than translated line by line. Keep it that way when editing: change the meaning in both files, then write each in its own language.
 
-The two versions name different companies on purpose: the English pages present Mosiken (registered in Wyoming, USA) and the Chinese pages present 衍川 (中国 · 广州). Registration is not a headquarters or an operating address, and the English copy does not say Mosiken is based or headquartered in Wyoming. The English clock stays on Eastern Time; it is not a claim about where the company operates. The brand name comes from `brand`. A JSON-LD postal address is written only when `org.addressRegion` and `org.addressCountry` are set in `tools/copy/*.mjs` (the Chinese pages do this; the English pages do not).
+The two versions name different companies on purpose: the English pages present Mosiken (registered in Wyoming, USA) and the Chinese pages present 衍川 (中国 · 广州). Registration is not a headquarters or an operating address, and the English copy does not say Mosiken is based or headquartered in Wyoming. The English clock runs on Mountain Time (`America/Denver`), the registration state's time zone. The brand name comes from `brand`. A JSON-LD postal address is written only when `org.addressRegion` and `org.addressCountry` are set in `tools/copy/*.mjs` (the Chinese pages do this; the English pages do not).
 
 ## Structure
 

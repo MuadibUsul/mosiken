@@ -97,7 +97,7 @@ function clock() {
   let fmt;
   try {
     fmt = new Intl.DateTimeFormat('en-US', {
-      timeZone: ZH ? 'Asia/Shanghai' : 'America/New_York',
+      timeZone: ZH ? 'Asia/Shanghai' : 'America/Denver',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
