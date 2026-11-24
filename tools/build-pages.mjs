@@ -1,16 +1,14 @@
-// Writes the site's HTML in both languages, and the sitemap, from tools/copy/*.mjs.
+// Writes the site's HTML and sitemap from tools/copy/en.mjs.
 //
 //   node tools/build-pages.mjs [outDir]
 //
-// English pages land at the root, Chinese pages in zh/. The output is plain
-// static HTML and is committed, so hosting needs no build step; run this only
-// after changing copy or page structure, then commit what it writes.
+// The output is plain static HTML and is committed, so hosting needs no build
+// step; run this only after changing copy or page structure, then commit.
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import en from './copy/en.mjs';
-import zh from './copy/zh.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = resolve(process.argv[2] || ROOT);
@@ -35,23 +33,16 @@ const indent = (str, n) =>
     .join('\n');
 
 const attr = (s) => s.replace(/&amp;/g, '&').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-const url = (lang, file) => `${SITE}/${lang === 'zh' ? 'zh/' : ''}${file === 'index.html' ? '' : file}`;
+const url = (file) => `${SITE}/${file === 'index.html' ? '' : file}`;
 
-/* ---------- Head: theme, metadata, structured data ---------- */
+/* ---------- Head: theme, metadata ---------- */
 
 const THEME_BOOT =
   "(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('mosiken-theme');if(t==='dark'||t==='light')d.dataset.theme=t}catch(e){}if('IntersectionObserver'in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('js-reveal');setTimeout(function(){if(!window.__mosiken)d.classList.remove('js-reveal')},4000)}})();";
 
 function head(C, p) {
-  const self = url(C.lang, p.file);
-  const alternates = p.noindex
-    ? '<meta name="robots" content="noindex">'
-    : [
-        `<link rel="canonical" href="${self}">`,
-        `<link rel="alternate" hreflang="en" href="${url('en', p.file)}">`,
-        `<link rel="alternate" hreflang="zh-Hans" href="${url('zh', p.file)}">`,
-        `<link rel="alternate" hreflang="x-default" href="${url('en', p.file)}">`,
-      ].join('\n');
+  const self = url(p.file);
+  const canonical = p.noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${self}">`;
   const ld = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -60,25 +51,22 @@ function head(C, p) {
     url: `${SITE}/`,
     logo: `${SITE}/assets/img/icon-512.png`,
     email: EMAIL,
-    foundingDate: '2026-11-18',
     founder: { '@type': 'Person', name: 'Chen Su' },
     slogan: C.org.slogan,
     description: C.org.description,
   };
   const jsonLd = p.jsonLd ? `\n<script type="application/ld+json">${JSON.stringify(ld)}</script>` : '';
-  const other = C.lang === 'zh' ? en : zh;
   return `
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${p.title}</title>
 <meta name="description" content="${attr(p.description)}">
-${alternates}
+${canonical}
 <meta name="theme-color" content="#EFF3F2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#06090C" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="${attr(C.legalName)}">
+<meta property="og:site_name" content="${attr(C.brand)}">
 <meta property="og:locale" content="${C.ogLocale}">
-<meta property="og:locale:alternate" content="${other.ogLocale}">
 <meta property="og:title" content="${attr(C.social.title)}">
 <meta property="og:description" content="${attr(C.social.description)}">
 <meta property="og:url" content="${self}">
@@ -91,11 +79,7 @@ ${alternates}
 <link rel="icon" href="${p.assets}favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="${p.assets}assets/img/apple-touch-icon.png">
 <link rel="manifest" href="${p.assets}site.webmanifest">
-<link rel="preload" href="${p.assets}assets/fonts/archivo-variable.woff2" as="font" type="font/woff2" crossorigin>${
-    C.lang === 'zh'
-      ? `\n<link rel="preload" href="${p.assets}assets/fonts/mosiken-sc.woff2" as="font" type="font/woff2" crossorigin>`
-      : ''
-  }
+<link rel="preload" href="${p.assets}assets/fonts/archivo-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${p.assets}assets/css/main.css">
 <script>${THEME_BOOT}</script>
 <script type="module" src="${p.assets}assets/js/main.js"></script>${jsonLd}`;
@@ -105,7 +89,6 @@ ${alternates}
 
 function header(C, p) {
   const U = C.ui;
-  const altLang = C.lang === 'zh' ? 'en' : 'zh-CN';
   const nav = [
     ['products.html', U.products],
     ['about.html', U.about],
@@ -130,7 +113,6 @@ function header(C, p) {
       <nav class="nav" id="site-nav" aria-label="${U.navLabel}">
         <a class="nav__home" href="${p.links}index.html"${p.file === 'index.html' ? ' aria-current="page"' : ''}>${U.home}</a>
         ${nav}
-        <a href="${p.alt}" lang="${altLang}" aria-label="${U.switchLangLabel}">${U.switchLang}</a>
       </nav>
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="${U.theme}">
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -146,14 +128,13 @@ function header(C, p) {
 
 function footer(C, p) {
   const U = C.ui;
-  const altLang = C.lang === 'zh' ? 'en' : 'zh-CN';
   const time = U.localTime ? `${U.localTime} <span data-clock>${U.clockFallback}</span>` : `<span data-clock>${U.clockFallback}</span>`;
   return `
 <footer class="site-footer">
   <div class="wrap">
     <div class="site-footer__top">
       <div>
-        <h2 class="label">${C.legalName}</h2>
+        <h2 class="label">${C.brand}</h2>
         <p>${U.place}</p>
         <p class="mono soft">${time}</p>
       </div>
@@ -163,14 +144,11 @@ function footer(C, p) {
         <a href="${p.links}products.html">${U.products}</a>
         <a href="${p.links}about.html">${U.about}</a>
         <a href="${p.links}contact.html">${U.contact}</a>
-        <a href="${p.links}privacy.html">${U.privacy}</a>
-        <a href="${p.links}terms.html">${U.terms}</a>
       </nav>
       <div>
         <h2 class="label">${U.contact}</h2>
         <a href="mailto:${EMAIL}">${EMAIL}</a>
         <a href="${SITE}">mosiken.org</a>
-        <a href="${p.alt}" lang="${altLang}" aria-label="${U.switchLangLabel}">${U.switchLang}</a>
       </div>
     </div>
     <div class="wordmark-wrap">
@@ -178,7 +156,7 @@ function footer(C, p) {
       <p class="clue mono" aria-hidden="true">67°44'45&quot;N 12°45'19&quot;E</p>
     </div>
     <div class="site-footer__base mono">
-      <p>${U.rights}</p>
+      <p>${U.rights} · <a href="${p.links}privacy.html">${U.privacy}</a> · <a href="${p.links}terms.html">${U.terms}</a></p>
       <a href="#top">${U.top} <span class="i i--down" aria-hidden="true"></span></a>
     </div>
   </div>
@@ -432,13 +410,12 @@ ${A.principles
       <h2 class="label sheet__margin" id="facts-title">${A.factsLabel}</h2>
       <div class="sheet__main">
         <dl class="facts">
-          <div><dt class="mono">${F.company}</dt><dd>${F.companyValue}</dd></div>
+          <div><dt class="mono">${F.company}</dt><dd>${C.legalName}</dd></div>
           <div><dt class="mono">${F.founder}</dt><dd>${F.founderValue}</dd></div>
-          <div><dt class="mono">${F.hq}</dt><dd>${F.hqValue}</dd></div>
-          <div><dt class="mono">${F.regOffice}</dt><dd>${F.regOfficeValue}</dd></div>
+          <div><dt class="mono">${F.hq}</dt><dd>${C.ui.place}</dd></div>
           <div><dt class="mono">${F.industry}</dt><dd>${F.industryValue}</dd></div>
           <div><dt class="mono">${F.focus}</dt><dd>${F.focusValue}</dd></div>
-          <div><dt class="mono">${F.portfolio}</dt><dd>${PRODUCTS.map((p) => `<a class="link" href="products.html#${p.id}">${p.name}</a>`).join(C.lang === 'zh' ? '、' : ', ')}</dd></div>
+          <div><dt class="mono">${F.portfolio}</dt><dd>${PRODUCTS.map((p) => `<a class="link" href="products.html#${p.id}">${p.name}</a>`).join(', ')}</dd></div>
           <div><dt class="mono">${F.contact}</dt><dd><a class="link" href="mailto:${EMAIL}">${EMAIL}</a></dd></div>
         </dl>
       </div>
@@ -481,10 +458,9 @@ ${K.topics.map(([s, label]) => `          <a href="${subject(s)}">${label} <span
       <h2 class="label sheet__margin" id="where-title">${K.whereLabel}</h2>
       <div class="sheet__main">
         <dl class="facts">
-          <div><dt class="mono">${K.facts.company}</dt><dd>${K.facts.companyValue}</dd></div>
+          <div><dt class="mono">${K.facts.company}</dt><dd>${C.legalName}</dd></div>
           <div><dt class="mono">${K.facts.founder}</dt><dd>${K.facts.founderValue}</dd></div>
-          <div><dt class="mono">${K.facts.location}</dt><dd>${K.facts.locationValue}</dd></div>
-          <div><dt class="mono">${K.facts.regOffice}</dt><dd>${K.facts.regOfficeValue}</dd></div>
+          <div><dt class="mono">${K.facts.location}</dt><dd>${C.ui.place}</dd></div>
           <div><dt class="mono">${K.facts.time}</dt><dd><span data-clock>${C.ui.clockFallback}</span></dd></div>
           <div><dt class="mono">${K.facts.web}</dt><dd><a class="link" href="${SITE}">mosiken.org</a></dd></div>
         </dl>
@@ -597,52 +573,40 @@ const write = (rel, html) => {
   written.push(rel);
 };
 
-for (const C of [en, zh]) {
-  const isZh = C.lang === 'zh';
-  for (const file of PAGES) {
-    const p = {
-      file,
-      assets: isZh ? '../' : '',
-      links: '',
-      alt: isZh ? `../${file}` : `zh/${file}`,
-      ...META[file](C),
-    };
-    write(`${isZh ? 'zh/' : ''}${file}`, documentFor(C, p, BUILD[file](C)));
-  }
-  // Static hosts serve the root 404.html for missing paths; both use root-absolute links.
+for (const file of PAGES) {
   const p = {
-    file: '404.html',
-    assets: '/',
-    links: isZh ? '/zh/' : '/',
-    alt: isZh ? '/404.html' : '/zh/404.html',
-    noindex: true,
-    gyre: true,
-    title: C.lost.title,
-    description: C.lost.description,
+    file,
+    assets: '',
+    links: '',
+    ...META[file](en),
   };
-  write(`${isZh ? 'zh/' : ''}404.html`, documentFor(C, p, lost(C, p)));
+  write(file, documentFor(en, p, BUILD[file](en)));
 }
 
-/* ---------- Sitemap, with each page's other language ---------- */
+const p404 = {
+  file: '404.html',
+  assets: '/',
+  links: '/',
+  noindex: true,
+  gyre: true,
+  title: en.lost.title,
+  description: en.lost.description,
+};
+write('404.html', documentFor(en, p404, lost(en, p404)));
+
+/* ---------- Sitemap ---------- */
 
 const today = new Date().toISOString().slice(0, 10);
-const entries = ['en', 'zh']
-  .flatMap((lang) =>
-    PAGES.map(
-      (file) => `  <url>
-    <loc>${url(lang, file)}</loc>
+const entries = PAGES.map(
+  (file) => `  <url>
+    <loc>${url(file)}</loc>
     <lastmod>${today}</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="${url('en', file)}"/>
-    <xhtml:link rel="alternate" hreflang="zh-Hans" href="${url('zh', file)}"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${url('en', file)}"/>
   </url>`,
-    ),
-  )
-  .join('\n');
+).join('\n');
 write(
   'sitemap.xml',
   `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${entries}
 </urlset>
 `,
