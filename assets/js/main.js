@@ -97,7 +97,7 @@ function clock() {
   let fmt;
   try {
     fmt = new Intl.DateTimeFormat('en-US', {
-      timeZone: ZH ? 'Asia/Shanghai' : 'America/Denver',
+      timeZone: 'America/Denver',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
@@ -108,7 +108,7 @@ function clock() {
     return;
   }
   const tick = () => {
-    const text = ZH ? `北京时间 ${fmt.format(new Date())}` : fmt.format(new Date());
+    const text = ZH ? `北美山区时间 ${fmt.format(new Date())}` : fmt.format(new Date());
     els.forEach((el) => {
       el.textContent = text;
     });

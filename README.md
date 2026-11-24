@@ -11,21 +11,17 @@ It is a static site in English and Simplified Chinese: plain HTML, one styleshee
 | `index.html` | Home: hero, introduction, product index, mission, contact |
 | `products.html` | Veynod, ANCS, Serendipity and SheetOS, each with its current stage |
 | `about.html` | Company profile, mission, vision, how we build, facts |
-| `contact.html` | Email address and contact topics |
+| `contact.html` | Email address, corporate details, and contact topics |
+| `privacy.html` | Privacy Policy for Mosiken LLC websites and software |
+| `terms.html` | Terms of Service for Mosiken LLC websites and software |
 | `404.html` | Not-found page (uses root-absolute paths so it works at any depth) |
-| `zh/…` | The same five pages in Simplified Chinese |
+| `zh/…` | The same seven pages in Simplified Chinese |
 
 ## Languages
 
-There is no language switch. A short script at the top of every page reads the browser's preferred languages and sends the reader to the matching version before anything is drawn:
+English pages live at `/` and Simplified Chinese pages live at `/zh/`, linked via an explicit language switch in the navigation and footer (without automatic client-side redirects, ensuring deterministic inspection for users, search engines, and compliance reviewers). Every page lists its counterpart with `hreflang`, and `sitemap.xml` carries the pairs.
 
-- the first of the browser's languages that is Chinese or English decides; any Chinese (`zh-CN`, `zh-TW`, `zh-HK`, …) gets the Chinese pages;
-- a browser whose list has neither gets English;
-- crawlers are never redirected, so search engines index both versions. Every page lists its counterpart with `hreflang`, and `sitemap.xml` carries the pairs.
-
-The Chinese copy is written for Chinese readers rather than translated line by line. Keep it that way when editing: change the meaning in both files, then write each in its own language.
-
-The two versions name different companies on purpose: the English pages present Mosiken (registered in Wyoming, USA) and the Chinese pages present 衍川 (中国 · 广州). Registration is not a headquarters or an operating address, and the English copy does not say Mosiken is based or headquartered in Wyoming. The English clock runs on Mountain Time (`America/Denver`), the registration state's time zone. The brand name comes from `brand`. A JSON-LD postal address is written only when `org.addressRegion` and `org.addressCountry` are set in `tools/copy/*.mjs` (the Chinese pages do this; the English pages do not).
+Both versions consistently represent the single legal entity **Mosiken LLC** (registered in Wyoming, USA; Chinese brand name `衍川`), founded and wholly owned by Chen Su. The clock runs on Mountain Time (`America/Denver`), the registration state's time zone.
 
 ## Structure
 

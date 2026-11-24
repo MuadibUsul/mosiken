@@ -15,7 +15,7 @@ import zh from './copy/zh.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = resolve(process.argv[2] || ROOT);
 const SITE = 'https://mosiken.org';
-const EMAIL = 'ethan@mosiken.org';
+const EMAIL = 'contact@mosiken.org';
 const GYRE = `67°48'N 12°50'E`;
 
 const PRODUCTS = [
@@ -25,7 +25,7 @@ const PRODUCTS = [
   { id: 'sheetos', name: 'SheetOS', status: 'live', links: ['https://sushiheng.com'] },
 ];
 
-const PAGES = ['index.html', 'products.html', 'about.html', 'contact.html'];
+const PAGES = ['index.html', 'products.html', 'about.html', 'contact.html', 'privacy.html', 'terms.html'];
 
 const indent = (str, n) =>
   str
@@ -37,17 +37,7 @@ const indent = (str, n) =>
 const attr = (s) => s.replace(/&amp;/g, '&').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 const url = (lang, file) => `${SITE}/${lang === 'zh' ? 'zh/' : ''}${file === 'index.html' ? '' : file}`;
 
-/* ---------- Head: language routing, theme, metadata ---------- */
-
-// Runs before anything paints. Visitors whose browser prefers Chinese get the
-// Chinese pages; everyone else gets English. Crawlers are left where they are,
-// so both versions stay indexable. There is no switch: the browser decides.
-const route = (alt, zhPage) =>
-  `(function(){var h=document.documentElement,u=navigator.userAgent||'';` +
-  `if(/bot|crawl|spider|slurp|archiver|facebookexternalhit|embedly|preview|lighthouse|headless/i.test(u))return;` +
-  `var l=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||''],z=false;` +
-  `for(var i=0;i<l.length;i++){var c=String(l[i]).toLowerCase();if(c.indexOf('zh')===0){z=true;break}if(c.indexOf('en')===0)break}` +
-  `if(z!==${zhPage}){h.style.visibility='hidden';location.replace(${JSON.stringify(alt)}+location.search+location.hash)}})();`;
+/* ---------- Head: theme, metadata, structured data ---------- */
 
 const THEME_BOOT =
   "(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('mosiken-theme');if(t==='dark'||t==='light')d.dataset.theme=t}catch(e){}if('IntersectionObserver'in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('js-reveal');setTimeout(function(){if(!window.__mosiken)d.classList.remove('js-reveal')},4000)}})();";
@@ -66,30 +56,27 @@ function head(C, p) {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: C.brand,
+    legalName: C.legalName,
     url: `${SITE}/`,
     logo: `${SITE}/assets/img/icon-512.png`,
     email: EMAIL,
+    foundingDate: '2026-11-18',
+    founder: { '@type': 'Person', name: 'Chen Su' },
     slogan: C.org.slogan,
     description: C.org.description,
   };
-  // A postal address is a physical location. English copy only states the
-  // registration jurisdiction, so it omits addressRegion and publishes no address.
-  if (C.org.addressRegion && C.org.addressCountry) {
-    ld.address = { '@type': 'PostalAddress', addressRegion: C.org.addressRegion, addressCountry: C.org.addressCountry };
-  }
   const jsonLd = p.jsonLd ? `\n<script type="application/ld+json">${JSON.stringify(ld)}</script>` : '';
   const other = C.lang === 'zh' ? en : zh;
   return `
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script>${route(p.alt, C.lang === 'zh')}</script>
 <title>${p.title}</title>
 <meta name="description" content="${attr(p.description)}">
 ${alternates}
 <meta name="theme-color" content="#EFF3F2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#06090C" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="${attr(C.brand)}">
+<meta property="og:site_name" content="${attr(C.legalName)}">
 <meta property="og:locale" content="${C.ogLocale}">
 <meta property="og:locale:alternate" content="${other.ogLocale}">
 <meta property="og:title" content="${attr(C.social.title)}">
@@ -118,6 +105,7 @@ ${alternates}
 
 function header(C, p) {
   const U = C.ui;
+  const altLang = C.lang === 'zh' ? 'en' : 'zh-CN';
   const nav = [
     ['products.html', U.products],
     ['about.html', U.about],
@@ -142,6 +130,7 @@ function header(C, p) {
       <nav class="nav" id="site-nav" aria-label="${U.navLabel}">
         <a class="nav__home" href="${p.links}index.html"${p.file === 'index.html' ? ' aria-current="page"' : ''}>${U.home}</a>
         ${nav}
+        <a href="${p.alt}" lang="${altLang}" aria-label="${U.switchLangLabel}">${U.switchLang}</a>
       </nav>
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="${U.theme}">
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -157,13 +146,14 @@ function header(C, p) {
 
 function footer(C, p) {
   const U = C.ui;
+  const altLang = C.lang === 'zh' ? 'en' : 'zh-CN';
   const time = U.localTime ? `${U.localTime} <span data-clock>${U.clockFallback}</span>` : `<span data-clock>${U.clockFallback}</span>`;
   return `
 <footer class="site-footer">
   <div class="wrap">
     <div class="site-footer__top">
       <div>
-        <h2 class="label">${C.brand}</h2>
+        <h2 class="label">${C.legalName}</h2>
         <p>${U.place}</p>
         <p class="mono soft">${time}</p>
       </div>
@@ -173,11 +163,14 @@ function footer(C, p) {
         <a href="${p.links}products.html">${U.products}</a>
         <a href="${p.links}about.html">${U.about}</a>
         <a href="${p.links}contact.html">${U.contact}</a>
+        <a href="${p.links}privacy.html">${U.privacy}</a>
+        <a href="${p.links}terms.html">${U.terms}</a>
       </nav>
       <div>
         <h2 class="label">${U.contact}</h2>
         <a href="mailto:${EMAIL}">${EMAIL}</a>
         <a href="${SITE}">mosiken.org</a>
+        <a href="${p.alt}" lang="${altLang}" aria-label="${U.switchLangLabel}">${U.switchLang}</a>
       </div>
     </div>
     <div class="wordmark-wrap">
@@ -439,8 +432,10 @@ ${A.principles
       <h2 class="label sheet__margin" id="facts-title">${A.factsLabel}</h2>
       <div class="sheet__main">
         <dl class="facts">
-          <div><dt class="mono">${F.company}</dt><dd>${C.brand}</dd></div>
-          <div><dt class="mono">${F.hq}</dt><dd>${C.ui.place}</dd></div>
+          <div><dt class="mono">${F.company}</dt><dd>${F.companyValue}</dd></div>
+          <div><dt class="mono">${F.founder}</dt><dd>${F.founderValue}</dd></div>
+          <div><dt class="mono">${F.hq}</dt><dd>${F.hqValue}</dd></div>
+          <div><dt class="mono">${F.regOffice}</dt><dd>${F.regOfficeValue}</dd></div>
           <div><dt class="mono">${F.industry}</dt><dd>${F.industryValue}</dd></div>
           <div><dt class="mono">${F.focus}</dt><dd>${F.focusValue}</dd></div>
           <div><dt class="mono">${F.portfolio}</dt><dd>${PRODUCTS.map((p) => `<a class="link" href="products.html#${p.id}">${p.name}</a>`).join(C.lang === 'zh' ? '、' : ', ')}</dd></div>
@@ -486,14 +481,50 @@ ${K.topics.map(([s, label]) => `          <a href="${subject(s)}">${label} <span
       <h2 class="label sheet__margin" id="where-title">${K.whereLabel}</h2>
       <div class="sheet__main">
         <dl class="facts">
-          <div><dt class="mono">${K.facts.company}</dt><dd>${C.brand}</dd></div>
-          <div><dt class="mono">${K.facts.location}</dt><dd>${C.ui.place}</dd></div>
+          <div><dt class="mono">${K.facts.company}</dt><dd>${K.facts.companyValue}</dd></div>
+          <div><dt class="mono">${K.facts.founder}</dt><dd>${K.facts.founderValue}</dd></div>
+          <div><dt class="mono">${K.facts.location}</dt><dd>${K.facts.locationValue}</dd></div>
+          <div><dt class="mono">${K.facts.regOffice}</dt><dd>${K.facts.regOfficeValue}</dd></div>
           <div><dt class="mono">${K.facts.time}</dt><dd><span data-clock>${C.ui.clockFallback}</span></dd></div>
           <div><dt class="mono">${K.facts.web}</dt><dd><a class="link" href="${SITE}">mosiken.org</a></dd></div>
         </dl>
       </div>
     </div>
   </section>
+</main>`;
+}
+
+function legalDoc(L) {
+  const sections = L.sections
+    .map(
+      ([heading, paragraphs], idx) => `  <section class="section section--tight" aria-labelledby="legal-sec-${idx + 1}">
+    <div class="wrap sheet">
+      <h2 class="label sheet__margin" id="legal-sec-${idx + 1}">${heading}</h2>
+      <div class="sheet__main">
+        <div class="prose">
+${paragraphs.map((t) => `          <p>${t}</p>`).join('\n')}
+        </div>
+      </div>
+    </div>
+  </section>`,
+    )
+    .join('\n\n  <hr class="rule">\n\n');
+
+  return `
+<main id="main">
+  <header class="page-head">
+    <div class="wrap sheet">
+      <p class="label sheet__margin">${L.label}</p>
+      <div class="sheet__main">
+        <h1 class="page-head__title">${L.heading}</h1>
+        <p class="lead">${L.lead}</p>
+      </div>
+    </div>
+  </header>
+
+  <hr class="rule">
+
+${sections}
 </main>`;
 }
 
@@ -541,12 +572,21 @@ ${indent(footer(C, p), 2)}
 `;
 }
 
-const BUILD = { 'index.html': home, 'products.html': products, 'about.html': about, 'contact.html': contact };
+const BUILD = {
+  'index.html': home,
+  'products.html': products,
+  'about.html': about,
+  'contact.html': contact,
+  'privacy.html': (C) => legalDoc(C.privacyPage),
+  'terms.html': (C) => legalDoc(C.termsPage),
+};
 const META = {
   'index.html': (C) => ({ title: C.home.title, description: C.home.description, jsonLd: true, gyre: true }),
   'products.html': (C) => ({ title: C.productsPage.title, description: C.productsPage.description }),
   'about.html': (C) => ({ title: C.about.title, description: C.about.description }),
   'contact.html': (C) => ({ title: C.contact.title, description: C.contact.description }),
+  'privacy.html': (C) => ({ title: C.privacyPage.title, description: C.privacyPage.description }),
+  'terms.html': (C) => ({ title: C.termsPage.title, description: C.termsPage.description }),
 };
 
 const written = [];
@@ -569,8 +609,7 @@ for (const C of [en, zh]) {
     };
     write(`${isZh ? 'zh/' : ''}${file}`, documentFor(C, p, BUILD[file](C)));
   }
-  // GitHub Pages serves the root 404.html for every missing path; it sends
-  // Chinese readers on to zh/404.html, so both use root-absolute links.
+  // Static hosts serve the root 404.html for missing paths; both use root-absolute links.
   const p = {
     file: '404.html',
     assets: '/',
